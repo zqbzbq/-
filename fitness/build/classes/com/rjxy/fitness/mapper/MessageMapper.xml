@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rjxy.fitness.mapper.MessageMapper" >
+  <resultMap id="BaseResultMap" type="com.rjxy.fitness.entity.Message" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="fromid" property="fromid" jdbcType="VARCHAR" />
+    <result column="toid" property="toid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="DATE" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, fromid, toid, type, time, content, status
+  </sql>
+  <!-- 读取验证消息列表-->
+  <select id="selectCheckMessages" resultMap="BaseResultMap" parameterType="string" >
+    select * from message
+    where toid = #{id} and type=0 and status=0
+  </select>
+  <!-- 查询好友发送给我的聊天消息-->
+  <select id="selectMessages" resultMap="BaseResultMap" parameterType="map" >
+    select * from message
+    where (fromid = #{fromid} and toid=#{toid} ) 
+    or (fromid = #{toid} and toid=#{fromid})
+    and type=1 order by time desc
+  </select>
+  <!-- 更新消息状态的方法-->
+  <update id="updateMessageStatus"  parameterType="map" >
+    update message set  status=1
+    where fromid = #{fromid} and toid=#{toid} and type=#{type}
+  </update>
+  <!-- 查询好友发送给我的未读取的消息个数-->
+  <select id="selectNoReadMessageCount" resultType="int" parameterType="map" >
+    select 
+    count(1) as geshu
+    from message
+    where fromid = #{fromid} and toid=#{toid} and type='1' and status='0'
+  </select>
+  <!-- 添加一个登录方法 -->
+  <select id="selectLoginUser" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from fitnessuser
+    where userid = #{userid} and password=#{password}
+  </select>
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from message
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from message
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.rjxy.fitness.entity.Message" >
+    insert into message (id, fromid, toid, 
+      type, time, content, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{fromid,jdbcType=VARCHAR}, #{toid,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{time,jdbcType=DATE}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.rjxy.fitness.entity.Message" >
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="fromid != null" >
+        fromid,
+      </if>
+      <if test="toid != null" >
+        toid,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fromid != null" >
+        #{fromid,jdbcType=VARCHAR},
+      </if>
+      <if test="toid != null" >
+        #{toid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=DATE},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.rjxy.fitness.entity.Message" >
+    update message
+    <set >
+      <if test="fromid != null" >
+        fromid = #{fromid,jdbcType=VARCHAR},
+      </if>
+      <if test="toid != null" >
+        toid = #{toid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=DATE},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rjxy.fitness.entity.Message" >
+    update message
+    set fromid = #{fromid,jdbcType=VARCHAR},
+      toid = #{toid,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      time = #{time,jdbcType=DATE},
+      content = #{content,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

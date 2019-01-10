@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/context 
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/tx 
+         http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        ">
+
+        <!-- 注解扫描包 -->
+        <context:component-scan base-package="com.summer" />
+        <!-- 加载jdbc.properties文件  -->
+
+        <context:property-placeholder location="classpath:jdbc.properties"/>
+        <!--第一步: 配置数据源 -->
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+            <property name="jdbcUrl" value="${jdbc.url}"></property>
+            <property name="driverClass" value="${jdbc.driver}"></property>
+            <property name="user" value="${jdbc.username}"></property>
+            <property name="password" value="${jdbc.password}"></property>
+        </bean>
+
+        <!-- 配置和mybatis的整合  -->
+        <!--第二步: 创建sqlSessionFactory工厂 -->
+        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <property name="dataSource" ref="dataSource"></property>
+            <!-- 指定Mybatis全局配置文件的位置 -->
+            <property name="configLocation" value="classpath:sqlConfig.xml"></property>
+        </bean>
+
+        <!-- 配置mybatis的代理接口开发 * 接口类名和映射文件必须同名 * 接口类和映射文件必须在同一个目     录下 * 接口的映射文件的namespace名称必须是接口的全限定名 
+        * 接口的方法名必须和映射的statement的id一致 -->
+        <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+            <!-- 扫描所有dao接口的实现，加入到ioc容器中  -->
+            <property name="basePackage" value="com.ssm.mapper"></property>
+            <property name="SqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        </bean>
+
+        <!--第三步: 事物 -->
+        <bean id="txManager"
+            class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"></property>
+        </bean>
+
+        <!-- 配置拦截service -->
+        <aop:config>
+            <aop:pointcut expression="execution(* com.ssm.service..*(..))" id="txPoint"/>
+            <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+        </aop:config>
+
+        <!-- 配置事物增强,事物如何切入-->
+        <tx:advice id="txAdvice" transaction-manager="txManager">
+            <tx:attributes>
+                <!-- 所有方法都是事物方法 -->
+                <tx:method name="*"/>
+                <!-- 以get开始的所有方法 -->
+                <tx:method name="get*" read-only="true"/>
+            </tx:attributes>
+        </tx:advice>
+
+</beans>

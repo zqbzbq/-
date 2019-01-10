@@ -1,0 +1,39 @@
+body{
+	font-family:"微软雅黑";
+	background-image: url("../img/regist/f44.jpg");
+	background-position: top;
+    background-repeat: no-repeat;
+}
+h1{
+	text-align: center;
+	margin-top: 190px;
+	margin-bottom: 30px;
+	color:#990000;
+}
+table{
+	
+	margin:0px auto;
+}
+table tr td{
+	padding-top:10px;
+}
+table tr td.td_txt{
+	text-align:right;
+	font-size: 18px;
+}
+table tr td.td_sum{
+	text-align:center;
+}
+input{
+	width:150px;
+	height:22px;
+	border:1px solid #ccc;
+}
+input[name='valistr']{
+	width:80px;
+	vertical-align: middle;
+}
+input[name='valistr']+img{
+	vertical-align: middle;
+}
+

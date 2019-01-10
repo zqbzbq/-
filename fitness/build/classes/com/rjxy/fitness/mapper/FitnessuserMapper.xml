@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rjxy.fitness.mapper.FitnessuserMapper">
+	<resultMap id="BaseResultMap" type="com.rjxy.fitness.entity.Fitnessuser">
+		<result column="userid" property="userid" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="INTEGER" />
+		<result column="profilehead" property="profilehead" jdbcType="VARCHAR" />
+		<result column="profile" property="profile" jdbcType="VARCHAR" />
+		<result column="firsttime" property="firsttime" jdbcType="DATE" />
+		<result column="checktype" property="checktype" jdbcType="INTEGER" />
+		<result column="lasttime" property="lasttime" jdbcType="DATE" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="orderclass" property="orderclass" jdbcType="VARCHAR" />
+		<result column="ltype" property="ltype" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, userid, password, nickname, sex, age, profilehead, profile,
+		firsttime, checktype,
+		lasttime, status, orderclass, ltype
+	</sql>
+
+<select id="selectuserid" resultMap="BaseResultMap" parameterType="Map" >
+    select *
+    from fitnessuser
+    where userid = #{userid,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 查询所有 --> 
+    <select id="getALLUser" resultType="com.rjxy.fitness.entity.Fitnessuser"> 
+    select * from fitnessuser limit #{start},#{rows}
+    </select>
+    
+  <!--查询条目  -->
+  <select id="getCountu" resultType="com.rjxy.fitness.entity.Fitnessuser"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select id from fitnessuser
+    </select>
+  
+   <!--查询条目  -->
+  <select id="getCount" resultType="com.rjxy.fitness.entity.Fitnessuser"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select id from fitnessuser
+    </select>
+    
+    <!-- 查询用户-->
+    <select id="list" resultType="com.rjxy.fitness.entity.Fitnessuser">
+        select * from fitnessuser
+    </select> 
+
+	<!-- 添加好友的方法 -->
+	<insert id="insertFriendUser" parameterType="map">
+		insert into friend(mineid,friendid) values(#{mineid},#{friendid})
+	</insert>
+	
+	<!-- 添加一个查找登录不是用户好友列表的方法 parameterType="string"resultMap="BaseResultMap-->
+	<select id="selectNotFriends" resultMap="BaseResultMap"
+		parameterType="string">
+		select
+		<include refid="Base_Column_List" />
+		from fitnessuser
+		where id !=#{id} and checktype!=2
+		and id not in(select friendid from friend where mineid=#{id}) 
+	</select>
+
+<!--  添加一个查找登录不是用户好友列表的方法 parameterType="string"resultMap="BaseResultMap
+	<select id="selectNotFriends" resultMap="BaseResultMap"
+		resultType="com.rjxy.fitness.entity.Fitnessuser">
+		select
+		<include refid="Base_Column_List" />
+		from fitnessuser
+		where id !=#{id} and checktype!=2
+		and id not in(select friendid from friend where mineid=#{id}) limit #{arg0},#{arg1}
+	</select> -->
+	
+	<!--添加一个登录方法 -->
+	<select id="selectLoginUser" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from fitnessuser
+		where userid = #{userid} and password=#{password}
+	</select>
+	<!-- 添加一个查找登录用户好友列表的方法 -->
+	<select id="selectUserFriends" resultMap="BaseResultMap"
+		parameterType="string">
+		select
+		<include refid="Base_Column_List" />
+		from fitnessuser
+		where id in(select friendid from friend where mineid=#{id} )
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from fitnessuser
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from fitnessUser
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+
+	<insert id="insert" parameterType="com.rjxy.fitness.entity.Fitnessuser">
+		insert into fitnessUser (id, userid, password,
+		nickname, sex, age,
+		profilehead, profile, firsttime,
+		checktype, lasttime, status, orderclass, ltype
+		)
+		values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		'匿名',#{sex,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{profilehead,jdbcType=VARCHAR},'',now(),1,now(),1,#{orderclass,jdbcType=VARCHAR},#{ltype,jdbcType=INTEGER})
+	</insert>
+
+
+	<insert id="insertSelective" parameterType="com.rjxy.fitness.entity.Fitnessuser">
+		insert into fitnessuser
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="nickname != null">
+				nickname,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="age != null">
+				age,
+			</if>
+			<if test="profilehead != null">
+				profilehead,
+			</if>
+			<if test="profile != null">
+				profile,
+			</if>
+			<if test="firsttime != null">
+				firsttime,
+			</if>
+			<if test="checktype != null">
+				checktype,
+			</if>
+			<if test="lasttime != null">
+				lasttime,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="orderclass != null">
+				orderclass,
+			</if>
+			<if test="ltype != null">
+				ltype,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				#{userid,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				#{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="age != null">
+				#{age,jdbcType=INTEGER},
+			</if>
+			<if test="profilehead != null">
+				#{profilehead,jdbcType=VARCHAR},
+			</if>
+			<if test="profile != null">
+				#{profile,jdbcType=VARCHAR},
+			</if>
+			<if test="firsttime != null">
+				#{firsttime,jdbcType=DATE},
+			</if>
+			<if test="checktype != null">
+				#{checktype,jdbcType=INTEGER},
+			</if>
+			<if test="lasttime != null">
+				#{lasttime,jdbcType=DATE},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="orderclass != null">
+				#{orderclass,jdbcType=VARCHAR},
+			</if>
+			<if test="ltype != null">
+				#{ltype,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.rjxy.fitness.entity.Fitnessuser">
+		update fitnessuser
+		<set>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				nickname = #{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="age != null">
+				age = #{age,jdbcType=INTEGER},
+			</if>
+			<if test="profilehead != null">
+				profilehead = #{profilehead,jdbcType=VARCHAR},
+			</if>
+			<if test="profile != null">
+				profile = #{profile,jdbcType=VARCHAR},
+			</if>
+			<if test="firsttime != null">
+				firsttime = #{firsttime,jdbcType=DATE},
+			</if>
+			<if test="checktype != null">
+				checktype = #{checktype,jdbcType=INTEGER},
+			</if>
+			<if test="lasttime != null">
+				lasttime = #{lasttime,jdbcType=DATE},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="orderclass != null">
+				orderclass = #{orderclass,jdbcType=VARCHAR},
+			</if>
+			<if test="ltype != null">
+				ltype = #{ltype,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateByPrimaryKeySelective1" parameterType="com.rjxy.fitness.entity.Fitnessuser">
+		update fitnessuser
+		<set>
+    orderclass = null
+			
+			
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<update id="updateByPrimaryKey" parameterType="com.rjxy.fitness.entity.Fitnessuser">
+		update fitnessuser
+		set userid = #{userid,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		nickname = #{nickname,jdbcType=VARCHAR},
+		sex = #{sex,jdbcType=VARCHAR},
+		age = #{age,jdbcType=INTEGER},
+		profilehead = #{profilehead,jdbcType=VARCHAR},
+		profile = #{profile,jdbcType=VARCHAR},
+		firsttime = #{firsttime,jdbcType=DATE},
+		checktype = #{checktype,jdbcType=INTEGER},
+		lasttime = #{lasttime,jdbcType=DATE},
+		status = #{status,jdbcType=INTEGER},
+		orderclass = #{orderclass,jdbcType=VARCHAR},
+		ltype = #{ltype,jdbcType=INTEGER},
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

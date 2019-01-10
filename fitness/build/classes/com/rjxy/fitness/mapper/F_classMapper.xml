@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rjxy.fitness.mapper.F_classMapper" >
+  <resultMap id="BaseResultMap" type="com.rjxy.fitness.entity.F_class" >  
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="classname" property="classname" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+   <result column="times" property="times" jdbcType="VARCHAR" />
+    <result column="shouke" property="shouke" jdbcType="VARCHAR" />
+  
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,classname,content,type,times,shouke
+  </sql>
+  
+  <!-- 查询所有 --> 
+    <select id="getALLClasses" resultType="com.rjxy.fitness.entity.F_class"> 
+    select * from F_class limit #{start},#{rows}
+    </select>
+    
+  <!--查询条目  -->
+  <select id="getCount" resultType="com.rjxy.fitness.entity.F_class"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select id from F_class
+    </select>
+  
+  <!-- 添加课程的方法 -->
+  <insert id="insertF_class" parameterType="map" >
+    insert into F_class(classname,content,times,shouke) values(#{classname},#{content},#{time},#{shouke})
+  </insert>
+  
+   <!-- 修改 --> 
+   <update id="updatefclass" parameterType="map" >
+    update F_class set classname=#{classname},content=#{content},times=#{times},shouke=#{shouke} where id=#{id} 
+    </update> 
+    
+    <!-- 删除 --> 
+    <delete id="deletefclass" parameterType="String"> 
+    delete from F_class where id=#{id} 
+    </delete> 
+    
+    <!-- 根据id查找单个用户 --> 
+    <select id="findfclassById" parameterType="String" resultType="com.rjxy.fitness.entity.F_class"> 
+    select * from F_class where id=#{id} 
+    </select> 
+
+ <!-- 查询信息-->
+  <select id="selectClasses" resultMap="BaseResultMap"  >
+    select * from F_class  
+   <!-- where userid = #{id} order by createdate desc -->
+    
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from F_class
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from F_class
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.rjxy.fitness.entity.F_class" >
+    insert into F_class (id, classname,content, 
+      type,times,shouke 
+      )
+    values (#{id,jdbcType=VARCHAR}, #{classname,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{times,jdbcType=VARCHAR},#{shouke,jdbcType=VARCHAR}) 
+   </insert>
+    
+  <insert id="insertSelective" parameterType="com.rjxy.fitness.entity.F_class" >
+    insert into F_class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        id,
+      </if>
+      <if test="classname != null" >
+        classname,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="times != null" >
+        times,
+      </if>
+      <if test="shouke != null" >
+        shouke,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="classname != null" >
+        #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="times != null" >
+        #{times,jdbcType=VARCHAR},
+      </if>
+      <if test="shouke != null" >
+        #{shouke,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert> 
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.rjxy.fitness.entity.F_class" >
+    update F_class
+    <set >
+      <if test="classname != null" >
+        classname = #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+       <if test="times != null" >
+        times = #{times,jdbcType=VARCHAR},
+      </if>
+      <if test="shouke != null" >
+        shouke = #{content,jdbcType=VARCHAR},
+      </if>                
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rjxy.fitness.entity.F_class" >
+    update F_class
+    set classname = #{classname,jdbcType=VARCHAR},content = #{content,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},times = #{times,jdbcType=VARCHAR},shouke = #{shouke,jdbcType=VARCHAR}
+          
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

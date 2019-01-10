@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rjxy.fitness.mapper.SpaceMapper" >
+  <resultMap id="BaseResultMap" type="com.rjxy.fitness.entity.Space" >  
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="spaceid" property="spaceid" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="createdate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="replynum" property="replynum" jdbcType="VARCHAR" />  
+    
+    <association property="fitnessuser" javaType="com.rjxy.fitness.entity.Fitnessuser">
+     <id column="uid" property="id" jdbcType="VARCHAR"/>
+     <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+     <result column="profilehead" property="profilehead" jdbcType="VARCHAR"/>
+   </association>         
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,spaceid,content,createdate,replynum
+  </sql>
+  
+  <!-- 查询所有 --> 
+    <select id="getALLSpace" resultType="com.rjxy.fitness.entity.Space"> 
+    select * from space where spaceid =#{spaceid,jdbcType=VARCHAR} limit #{start},#{rows}
+    </select>
+    
+  <!--查询条目  -->
+  <select id="getCount" resultType="com.rjxy.fitness.entity.Space"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select * from space where spaceid =#{spaceid,jdbcType=VARCHAR}
+    </select>
+ 
+ 
+  <!-- 查询2所有 --> 
+    <select id="getALLSpace1" resultType="map" parameterType="com.rjxy.fitness.entity.Space"> 
+     select space.id,space.spaceid,space.content,space.createdate,fitnessuser.id,fitnessuser.nickname,
+     fitnessuser.profilehead from space,fitnessuser 
+     where space.spaceid = fitnessuser.id limit #{start},#{rows}
+    </select> 
+    
+  <!--查询2条目  -->
+  <select id="getCount1" resultType="com.rjxy.fitness.entity.Space"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select id from space 
+    </select>
+ 
+  <!-- 添加个性签名的方法 -->
+  <insert id="insertSpace" parameterType="map" >
+    insert into space(spaceid,content) values(#{spaceid},#{content})
+  </insert>
+  
+  <!-- 查询我的动态信息-->
+  <select id="selectSpace" resultMap="BaseResultMap" parameterType="String" >
+    select * from space where spaceid = #{id} order by createdate desc
+    
+  </select>
+       
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from space
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from space
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.rjxy.fitness.entity.Space" >
+    insert into space (id, spaceid, content, 
+      createdate, replynum
+      )
+    values (#{id,jdbcType=VARCHAR}, #{spaceid,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR},
+        ,#{createdate,jdbcType=TIMESTAMP}, #{replynum,jdbcType=INTEGER}) 
+   </insert>
+    
+  <insert id="insertSelective" parameterType="com.rjxy.fitness.entity.Space" >
+    insert into space
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        id,
+      </if>
+      <if test="spaceid != null" >
+        spaceid,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+      <if test="replynum != null" >
+        replynum,
+      </if>
+   
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="spaceid != null" >
+        #{spaceid,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replynum != null" >
+        #{replynum,jdbcType=VARCHAR},
+      </if>
+      
+    </trim>
+  </insert> 
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.rjxy.fitness.entity.Space" >
+    update space
+    <set >
+      <if test="spaceid != null" >
+        spaceid = #{spaceid,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replynum != null" >
+        replynum = #{replynum,jdbcType=VARCHAR},
+      </if>                 
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rjxy.fitness.entity.Space" >
+    update space
+    set spaceid = #{spaceid,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      createdate = #{createdate,jdbcType=TIMESTAMP}
+      replynum = #{replynum,jdbcType=VARCHAR},
+      
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

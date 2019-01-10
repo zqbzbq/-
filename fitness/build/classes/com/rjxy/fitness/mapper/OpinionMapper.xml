@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rjxy.fitness.mapper.OpinionMapper" >
+  <resultMap id="BaseResultMap" type="com.rjxy.fitness.entity.Opinion" >  
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="createdate" property="createdate" jdbcType="TIMESTAMP" />      
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,userid,username,tel,content,createdate
+  </sql>
+  
+  <!-- 查询所有 --> 
+    <select id="getALLOpinion" resultType="com.rjxy.fitness.entity.Opinion"> 
+    select * from opinion limit #{start},#{rows}
+    </select>
+    
+  <!--查询条目  -->
+  <select id="getCount" resultType="com.rjxy.fitness.entity.Opinion"
+  resultMap="BaseResultMap" parameterType="java.lang.String" > 
+    select id from opinion
+    </select>
+    
+    <!-- 删除 --> 
+    <delete id="deleteopinion" parameterType="String"> 
+    delete from opinion where id=#{id} 
+    </delete> 
+    
+    <!-- 根据id查找单个用户 --> 
+    <select id="findopinionById" parameterType="String" resultType="com.rjxy.fitness.entity.Opinion"> 
+    select * from opinion where id=#{id} 
+    </select>
+  
+  <!-- 添加个人意见的方法 -->
+  <insert id="insertOpinion" parameterType="map" >
+    insert into opinion(userid,username,tel,content) values(#{userid},#{username},#{tel},#{content})
+  </insert>
+  
+  <!-- 查询建议信息-->
+  <select id="selectOpinion" resultMap="BaseResultMap"  >
+    select * from opinion  
+   <!-- where userid = #{id} order by createdate desc -->
+    
+  </select>
+       
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from opinion
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from opinion
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.rjxy.fitness.entity.Opinion" >
+    insert into opinion (id, userid, username,tel,content, 
+      createdate 
+      )
+    values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+    #{tel,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}
+        ,#{createdate,jdbcType=TIMESTAMP}) 
+   </insert>
+    
+  <insert id="insertSelective" parameterType="com.rjxy.fitness.entity.Opinion" >
+    insert into opinion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="tel != null" >
+        tel,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createdate != null" >
+        createdate,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      
+    </trim>
+  </insert> 
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.rjxy.fitness.entity.Opinion" >
+    update opinion
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+                       
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.rjxy.fitness.entity.Opinion" >
+    update opinion
+    set userid = #{userid,jdbcType=VARCHAR},username = #{username,jdbcType=VARCHAR}
+      tel = #{tel,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      createdate = #{createdate,jdbcType=TIMESTAMP},
+          
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
